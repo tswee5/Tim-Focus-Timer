@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tim's Focus Timer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay muted loop id="nature-video">
+            <source src="Focus Timer Snow Background.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="container">
+        <h1>Tim's Focus Timer</h1>
+        <div class="mode-toggle">
+            <button id="work-mode" class="work-mode-btn active">Work</button>
+            <button id="rest-mode" class="rest-mode-btn">Rest</button>
+        </div>
+        <div class="timer">
+            <span id="minutes">25</span>:<span id="seconds">00</span>
+        </div>
+        <div class="controls">
+            <button id="start-pause" class="start-pause-btn">Start</button>
+            <button id="reset">Reset</button>
+        </div>
+        <div class="mode">
+            <span id="mode-text">Work Time</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
