@@ -23,37 +23,9 @@
             <span id="minutes">25</span>:<span id="seconds">00</span>
         </div>
         <div class="controls">
-            <div className="flex flex-col items-center gap-4">
-                {!isRunning ? (
-                    <button
-                        onClick={startTimer}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded w-32"
-                    >
-                        Start
-                    </button>
-                ) : (
-                    <div className="flex flex-col items-center gap-3">
-                        <button
-                            onClick={pauseTimer}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-8 rounded w-32"
-                        >
-                            Pause
-                        </button>
-                        <button
-                            onClick={addFiveMinutes}
-                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-8 rounded w-32"
-                        >
-                            +5 Minutes
-                        </button>
-                        <button
-                            onClick={resetTimer}
-                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-8 rounded w-32"
-                        >
-                            Reset
-                        </button>
-                    </div>
-                )}
-            </div>
+            <button id="startPauseButton" class="control-button bg-blue-500">Start</button>
+            <button id="addTimeButton" class="control-button bg-green-500 disabled" disabled>+5 Minutes</button>
+            <button id="resetButton" class="control-button bg-red-500 disabled" disabled>Reset</button>
         </div>
         <div class="mode">
             <span id="mode-text">Work Time</span>
