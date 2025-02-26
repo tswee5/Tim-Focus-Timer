@@ -2,9 +2,9 @@ const WORK_TIME = 25 * 60;
 const BREAK_TIME = 5 * 60;
 
 let timeLeft = WORK_TIME;
-let timerId = null;
-let isWorkTime = true;
 let isRunning = false;
+let timerId = null;
+let isWorkMode = true;
 let focusText = '';
 
 // Get DOM elements
@@ -27,79 +27,74 @@ function updateDisplay() {
     secondsDisplay.textContent = seconds.toString().padStart(2, '0');
 }
 
-function toggleButtons(running) {
-    if (running) {
+function updateButtonStates() {
+    const startPauseButton = document.getElementById('startPauseButton');
+    const addTimeButton = document.getElementById('addTimeButton');
+    const resetButton = document.getElementById('resetButton');
+
+    // Enable +5 minutes button always
+    addTimeButton.disabled = false;
+    addTimeButton.classList.remove('disabled');
+
+    // Update start/pause button text based on timer state
+    if (isRunning) {
         startPauseButton.textContent = 'Pause';
-        startPauseButton.classList.remove('bg-blue-500');
-        startPauseButton.classList.add('bg-yellow-500');
-        addTimeButton.disabled = false;
-        resetButton.disabled = false;
-        addTimeButton.classList.remove('disabled');
-        resetButton.classList.remove('disabled');
-    } else {
+    } else if (timeLeft === (isWorkMode ? WORK_TIME : BREAK_TIME)) {
         startPauseButton.textContent = 'Start';
-        startPauseButton.classList.remove('bg-yellow-500');
-        startPauseButton.classList.add('bg-blue-500');
-        addTimeButton.disabled = true;
-        const currentMode = isWorkTime ? WORK_TIME : BREAK_TIME;
-        if (timeLeft === currentMode) {
-            resetButton.disabled = true;
-            resetButton.classList.add('disabled');
-        } else {
-            resetButton.disabled = false;
-            resetButton.classList.remove('disabled');
-        }
-        addTimeButton.classList.add('disabled');
+    } else {
+        startPauseButton.textContent = 'Resume';
+    }
+
+    // Enable reset button when timer is not at initial state
+    resetButton.disabled = timeLeft === (isWorkMode ? WORK_TIME : BREAK_TIME);
+    if (resetButton.disabled) {
+        resetButton.classList.add('disabled');
+    } else {
+        resetButton.classList.remove('disabled');
     }
 }
 
 async function startPauseTimer() {
-    if (!isRunning) {
-        if (isWorkTime) {
-            const focus = await showFocusPrompt();
-            focusText = focus;
-            updateFocusDisplay();
-        }
+    if (!isRunning && timeLeft === (isWorkMode ? WORK_TIME : BREAK_TIME)) {
+        focusText = await showFocusPrompt();
+        updateFocusDisplay();
+    }
+    
+    if (isRunning) {
+        // Pause timer
+        clearInterval(timerId);
+        isRunning = false;
+    } else {
+        // Start or resume timer
         isRunning = true;
-        timerId = setInterval(updateTimer, 1000);
-        toggleButtons(true);
-    } else {
-        isRunning = false;
-        clearInterval(timerId);
-        timerId = null;
-        toggleButtons(false);
+        timerId = setInterval(() => {
+            timeLeft--;
+            updateDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                isRunning = false;
+                // Handle timer completion
+            }
+            updateButtonStates();
+        }, 1000);
     }
-}
-
-function updateTimer() {
-    if (timeLeft > 0) {
-        timeLeft--;
-        updateDisplay();
-        document.title = `${minutesDisplay.textContent}:${secondsDisplay.textContent} - Tim's Focus Timer`;
-    } else {
-        clearInterval(timerId);
-        timerId = null;
-        isRunning = false;
-        toggleButtons(false);
-        const nextMode = isWorkTime ? 'Rest' : 'Work';
-        document.title = `Tim's Focus Timer - Time to ${nextMode}`;
-    }
+    updateButtonStates();
 }
 
 function addFiveMinutes() {
-    timeLeft += 300;
+    timeLeft += 5 * 60;
     updateDisplay();
+    updateButtonStates();
 }
 
 function resetTimer() {
-    isRunning = false;
     clearInterval(timerId);
-    timerId = null;
-    timeLeft = isWorkTime ? WORK_TIME : BREAK_TIME;
+    isRunning = false;
+    timeLeft = isWorkMode ? WORK_TIME : BREAK_TIME;
     focusText = '';
     updateFocusDisplay();
     updateDisplay();
-    toggleButtons(false);
+    updateButtonStates();
 }
 
 // Add event listeners
@@ -112,11 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function switchMode(mode) {
-    isWorkTime = mode === 'work';
-    timeLeft = isWorkTime ? WORK_TIME : BREAK_TIME;
-    modeText.textContent = isWorkTime ? 'Work Time' : 'Break Time';
-    workModeButton.classList.toggle('active', isWorkTime);
-    restModeButton.classList.toggle('active', !isWorkTime);
+    isWorkMode = mode === 'work';
+    timeLeft = isWorkMode ? WORK_TIME : BREAK_TIME;
+    modeText.textContent = isWorkMode ? 'Work Time' : 'Break Time';
+    workModeButton.classList.toggle('active', isWorkMode);
+    restModeButton.classList.toggle('active', !isWorkMode);
     resetTimer();
 }
 
