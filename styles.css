@@ -237,4 +237,50 @@ body {
 .control-button.disabled:hover {
     transform: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Add these media queries at the end of your existing CSS file */
+
+@media screen and (max-width: 480px) {
+  .container {
+    width: calc(100% - 2rem);
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .timer {
+    font-size: 4rem; /* Smaller font size for mobile */
+  }
+
+  .controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .control-button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .mode-toggle {
+    width: 100%;
+  }
+
+  .mode-toggle button {
+    flex: 1;
+  }
+
+  .focus-prompt-content {
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Add these to improve touch targets on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .control-button,
+  .mode-toggle button {
+    min-height: 44px; /* Minimum touch target size */
+  }
 } 
